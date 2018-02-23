@@ -86,16 +86,24 @@ then
   sudo systemctl status docker
 fi
 
-date > /etc/bootstrapped
-
 # phpenv
-#sudo yum install -y autoconf automake bison gcc-c++ libxml2-devel libjpeg-devel libpng-devel libicu-devel epel-release libmcrypt-devel libtidy libtidy-devel libxslt-devel
-#phpenv install 7.1.14
-#phpenv global 7.1.14
-#curl -sS https://getcomposer.org/installer | php
-#sudo mv composer.phar /usr/local/bin/composer
-#/usr/local/bin/composer
-#composer global require phing/phing
-#composer global require phpstan/phpstan
-#sudo cp /home/vagrant/.anyenv/envs/phpenv/versions/7.1.14/composer/vendor/bin/phpstan /usr/local/bin/phpstan
 
+if [ ! -x /home/vagrant/.anyenv/envs/phpenv/shims/php ]
+then
+sudo yum install -y autoconf automake bison gcc-c++ libxml2-devel libjpeg-devel libpng-devel libicu-devel epel-release
+sudo yum install -y libmcrypt-devel libtidy-devel libxslt-devel
+cd /usr/local/src/
+wget https://jaist.dl.sourceforge.net/project/re2c/1.0.1/re2c-1.0.1.tar.gz
+tar -zxf re2c-1.0.1.tar.gz
+cd re2c-1.0.1/
+./configure
+make && sudo make install
+anyenv install phpenv
+source /home/vagrant/.bash_profile
+phpenv install 7.1.14
+phpenv global 7.1.14
+curl -sS https://getcomposer.org/installer | php
+sudo mv composer.phar /usr/local/bin/composer
+fi
+
+date > /home/vagrant/bootstrapped
